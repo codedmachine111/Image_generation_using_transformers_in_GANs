@@ -32,7 +32,16 @@ def train(n_epochs, batch_size, codings_size, d_steps, gp_w):
         d_loss_fn=discriminator_loss,
     )
 
-    visualization_callback = tf.keras.callbacks.LambdaCallback(on_epoch_end=lambda epoch, logs: visualize_generated_images(epoch, generator))
+    # Create a visualization callback
+    visualization_callback = tf.keras.callbacks.LambdaCallback(on_epoch_end=lambda epoch, logs: visualize_generated_images(epoch, generator, dataset))
+    # Create a ModelCheckpoint callback
+    model_checkpoint_path_weights = 'ckpts/CUB-WGAN-GP-weights-{epoch:02d}.keras'
+    model_checkpoint_callback_weights = ModelCheckpoint(
+        filepath=model_checkpoint_path_weights,
+        save_freq='epoch',  # Save every epoch
+        save_weights_only=True,  # Save only the weights
+    )
+
     history = gan.fit(dataset, epochs=n_epochs, verbose=1, callbacks=[visualization_callback, model_checkpoint_callback_weights])
 
     fig, ax = plt.subplots(figsize=(20, 6))
