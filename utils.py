@@ -36,7 +36,7 @@ def visualize_generated_images(epoch, generator, dataset, latent_dim=100, num_sa
         axes[i].imshow(generated_images[i].astype(np.uint8))
         axes[i].axis('off')
     plt.suptitle(f'Generated Images - Epoch {epoch}')
-    plt.show()
+    plt.savefig(f'./output/Output_Epoch-{epoch}')
 
 def prepare_data(batch_size, data_path):
     x_train_path = data_path + "/X_train_CUB.npy"
@@ -48,8 +48,8 @@ def prepare_data(batch_size, data_path):
     print(f'Dataset images shape: {x_train_64.shape}\n')
     print(f'Text embeddings shape: {embed_train_64.shape}\n')
 
-    print(f'Dataset images: \n')
-    show_dataset_images(x_train_64)
+    # print(f'Dataset images: \n')
+    # show_dataset_images(x_train_64)
 
     # Normalization
     x_train = x_train_64.astype(np.float32) / 127.5

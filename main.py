@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 from models import *
 from utils import *
 
-def train(n_epochs, batch_size, codings_size, d_steps, gp_w):
-    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+def train(n_epochs, batch_size, codings_size, d_steps, gp_w, data_path):
+    
+    print("GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-    dataset = prepare_data(batch_size=batch_size)
+    dataset = prepare_data(batch_size, data_path)
 
     gen_projection_dim = 64
     gen_num_heads = 4
@@ -44,10 +45,10 @@ def train(n_epochs, batch_size, codings_size, d_steps, gp_w):
 
     history = gan.fit(dataset, epochs=n_epochs, verbose=1, callbacks=[visualization_callback, model_checkpoint_callback_weights])
 
-    fig, ax = plt.subplots(figsize=(20, 6))
-    ax.set_title(f'Learning Curve', fontsize=18)
-    pd.DataFrame(history.history).plot(ax=ax)
-    ax.grid()
+    # fig, ax = plt.subplots(figsize=(20, 6))
+    # ax.set_title(f'Learning Curve', fontsize=18)
+    # pd.DataFrame(history.history).plot(ax=ax)
+    # ax.grid()
 
     generator.save(f'CUB-WGAN-GP_final.keras')
 
@@ -57,14 +58,15 @@ def main():
     N_EPOCHS = 500
     D_STEPS = 5
     GP_WEIGHT = 10.0
+    DATA_PATH = "./data/"
 
     if len(tf.config.list_physical_devices('GPU')) != 0:  
         with tf.device("GPU:0"):
             print("Training on GPU")
-            train(n_epochs=N_EPOCHS, batch_size=BATCH_SIZE, codings_size=CODINGS_SIZE, d_steps=D_STEPS, gp_w=GP_WEIGHT)
+            train(n_epochs=N_EPOCHS, batch_size=BATCH_SIZE, codings_size=CODINGS_SIZE, d_steps=D_STEPS, gp_w=GP_WEIGHT, data_path=DATA_PATH)
     else:
         print("NO GPU DETECTED! Training on CPU")
-        train(n_epochs=N_EPOCHS, batch_size=BATCH_SIZE, codings_size=CODINGS_SIZE, d_steps=D_STEPS, gp_w=GP_WEIGHT)
+        train(n_epochs=N_EPOCHS, batch_size=BATCH_SIZE, codings_size=CODINGS_SIZE, d_steps=D_STEPS, gp_w=GP_WEIGHT, data_path=DATA_PATH)
     
     print("Training Completed!!")
 

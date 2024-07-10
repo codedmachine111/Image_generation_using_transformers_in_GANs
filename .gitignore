@@ -3,3 +3,5 @@
 /__pycache__
 /data/64images.pickle
 /ckpts
+/data
+/output
